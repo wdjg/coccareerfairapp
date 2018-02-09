@@ -52,7 +52,7 @@ process.on('SIGTERM', function () {
 });
 
 // BRING IN YOUR SCHEMAS & MODELS
-require('./users');
 require('./employers');
+require('./users');
 require('./lineEvents');
 require('./lines');
