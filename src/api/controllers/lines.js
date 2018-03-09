@@ -231,21 +231,33 @@ function getMyPlaceByEmployerId(user_id, employer_id) {
 }
 
 // get /lines/users?employer_id=xxxxx
+// get /lines/users
 function getUsersByEmployerId(req, res) {
+    //if auth user is a recruiter, their emp_id is used (ignore query; recruiters can only see their own batch)
+    //else, use query parameter.
+    //if query blank and auth user isn't a recruiter, not allowed.
 
-    if (!req.query.employer_id) {
-        res.status(401).json({
+    let emp_id;
+    if (req.user.user_type === 'recruiter') {
+        emp_id = req.user.employer_id;
+    } else if (req.query.employer_id) {
+        emp_id = req.query.employer_id;
+    } else {
+        return res.status(401).json({
             "message": response.getLinesUsersMissingEmployerId
         });
-    } else if (req.user.user_type === 'student'){
-        res.status(401).json({
+    }
+
+    if (req.user.user_type === 'student'){
+        return res.status(401).json({
             "message": response.notStudent
         });
     } else {
+
         var user_ids = [];
         var line_ids = [];
 
-        var query = Line.find({ employer_id: req.query.employer_id }).where({ status: "inline" }).sort({ updated_by: -1 })
+        var query = Line.find({ employer_id: emp_id }).where({ status: "inline" }).sort({ updated_by: -1 })
         query.exec(function (err, lines) {
             if (err)
                 return res.send(err);
@@ -281,6 +293,17 @@ function getUsersByEmployerId(req, res) {
         })
     }
 }
+
+/*//get /lines/auth/users
+function getUsersByAuthEmployerId(req, res) {
+    if (req.user.user_type !== 'recruiter') {
+        return res.status(401).json({
+            "message": response.onlyRecruiters
+        });
+    }
+
+    return getUsersByEmployerId(req, res, req.user.employer_id);
+}*/
 
 // patch /lines/:id/status
 // currently, only the status field is mutable this way
