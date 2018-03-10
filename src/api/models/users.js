@@ -26,10 +26,6 @@ var userSchema = new Schema({
         type: String,
         select: false
     },
-    data: {
-        type: Object,
-        default: {}
-    },
     created_by: {
         type: Date,
         default: Date.now
