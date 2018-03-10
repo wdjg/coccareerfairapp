@@ -39,6 +39,9 @@ let messages =  {
     getQRNotFound: "NotFound: no QR found for your input",
     getQRMissingQuery: "InputError: Missing employer_id or qr_code_value as a query parameter in url",
 
+    // employerProfiles
+    getEmployerProfilesMissingEmployerId: "InputError: Needs employer_id as a query parameter in url",
+
     // misc
     success: "Success"
 

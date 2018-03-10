@@ -9,10 +9,6 @@ var employerSchema = new mongoose.Schema({
         required: true,
         index: true
     },
-    data: {
-        type: Object,
-        default: {}
-    },
     passcode: {
         type: Number,
         unique: true,

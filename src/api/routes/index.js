@@ -13,6 +13,7 @@ import lineController from '../controllers/lines'
 import lineEventsController from '../controllers/lineEvents'
 import employerController from '../controllers/employers'
 import qrController from '../controllers/qrCodeValues'
+import employerProfileController from '../controllers/employerProfiles'
 
 // authentication
 router.post('/register', authController.register);
@@ -51,5 +52,10 @@ router.delete('/employers/:id', auth, employerController.deleteEmployer);
 
 // QR
 router.get('/qr', auth, qrController.getQRWithQuery); //get qr code given emp_id or qr_code_value in query
+
+// employerProfiles
+router.get('/employerProfiles', auth, employerProfileController.getProfileByQuery); //gets company's profile based on query
+router.get('/employerProfiles/auth', auth, employerProfileController.getProfileByAuthUser); //gets own company's profile
+router.put('/employerProfiles', auth, employerProfileController.putProfile); //create/update own company's profile. Recruiters only.
 
 module.exports = router;
