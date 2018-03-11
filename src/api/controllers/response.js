@@ -40,6 +40,10 @@ let messages =  {
     getQRNotFound: "NotFound: no QR found for your input",
     getQRMissingQuery: "InputError: Missing employer_id or qr_code_value as a query parameter in url",
 
+    // user profiles
+    getProfileMissingUserId: "InputError: Needs user_id as a query parameter in url",
+    profileNoAdmins: "UnauthorizedError: Admins don't have profiles",
+
     // misc
     success: "Success"
 
