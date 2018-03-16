@@ -6,13 +6,9 @@ const Line = mongoose.model('Line');
 import response from './response.js'
 
 // get /employers/auth
-// RECRUITERS ONLY
 function getEmployerByAuthUser(req, res) {
-    if (req.user.user_type !== 'recruiter') {
-        res.status(401).json({
-            "message": response.onlyRecruiters
-        });
-    } else {
+    if (req.user.user_type === 'recruiter') {
+        //return the company that this recruiter works for.
         User.findById(req.user._id).exec( function(err, user){
             if (err)
                 return res.send(err);
@@ -22,7 +18,46 @@ function getEmployerByAuthUser(req, res) {
                 res.status(200).json(employer);
             });
         });
+    } else if (req.user.user_type === 'student') {
+        //check if the student has the company(ies) favorited.
+        if (req.query.name) {
+            Employer.findOne({name: req.query.name}).lean().exec(async function (err, employer) {
+                if (err) {
+                    return res.status(500).json({
+                        "message": err
+                    });
+                }
 
+                let thisUser = await User.findOne({ _id: req.user._id}).exec();
+                if (thisUser.favorites.includes(employer._id.toString())) {
+                    employer.favorite = "true";
+                }
+                return res.status(200).json(employer);
+            });
+        } else {
+            Employer.find({ }).lean().exec(async function (err, employers) {
+                if (err) {
+                    return res.status(500).json({
+                        "message": err
+                    });
+                }
+
+                let thisUser = await User.findOne({ _id: req.user._id}).exec();
+
+                employers.forEach(function(employer) {
+                    if (thisUser.favorites.includes(employer._id.toString())) {
+                        employer.favorite = "true";
+                    }
+                });  
+
+                return res.status(200).json({
+                    "employers": employers
+                });
+            });
+        }
+    } else {
+        //admin
+        return getEmployerBySearch(req, res);
     }
 }
 
