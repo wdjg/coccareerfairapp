@@ -58,6 +58,9 @@ var studentSchema = new Schema({
     },
     locations_desired: {
         type: [String]
+    },
+    favorites: {
+        type: [String]
     }
 }, options);
 
